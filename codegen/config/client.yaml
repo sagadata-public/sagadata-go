@@ -1,4 +1,5 @@
-package: genesiscloud
+---
+package: sagadata
 generate:
   client: true
 output: ../client.gen.go # relative to codegen.go

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/genesiscloud/genesiscloud-go"
+	"github.com/sagadata-public/sagadata-go"
 )
 
 // Generic pointer in Go 1.18+. Alternatively use "k8s.io/utils/pointer"
@@ -16,14 +16,14 @@ func pointer[T any](v T) *T {
 func run() error {
 	ctx := context.Background()
 
-	client, err := genesiscloud.NewGenesisCloudClient(genesiscloud.ClientConfig{
-		Token: os.Getenv("GENESISCLOUD_TOKEN"),
+	client, err := sagadata.NewSagaDataClient(sagadata.ClientConfig{
+		Token: os.Getenv("SAGADATA_TOKEN"),
 	})
 	if err != nil {
 		return err
 	}
 
-	resp, err := client.ListInstancesPaginatedWithResponse(ctx, &genesiscloud.ListInstancesPaginatedParams{
+	resp, err := client.ListInstancesPaginatedWithResponse(ctx, &sagadata.ListInstancesPaginatedParams{
 		Page:    pointer(1),
 		PerPage: pointer(100),
 	})
