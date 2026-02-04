@@ -1,8 +1,6 @@
-module github.com/genesiscloud/genesiscloud-go
+module github.com/sagadata-public/sagadata-go
 
-go 1.22.5
-
-toolchain go1.23.1
+go 1.24.5
 
 require (
 	github.com/oapi-codegen/oapi-codegen/v2 v2.4.1

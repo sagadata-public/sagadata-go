@@ -1,4 +1,4 @@
-package genesiscloud
+package sagadata
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestNewGenesisCloudClient_StaticToken(t *testing.T) {
+func TestNewSagaDataClient_StaticToken(t *testing.T) {
 	receivedToken := ""
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		receivedToken = r.Header.Get("X-Auth-Token")
@@ -18,7 +18,7 @@ func TestNewGenesisCloudClient_StaticToken(t *testing.T) {
 	}))
 	defer server.Close()
 
-	client, err := NewGenesisCloudClient(ClientConfig{
+	client, err := NewSagaDataClient(ClientConfig{
 		Endpoint: server.URL,
 		Token:    "static-test-token",
 	})
@@ -36,7 +36,7 @@ func TestNewGenesisCloudClient_StaticToken(t *testing.T) {
 	}
 }
 
-func TestNewGenesisCloudClient_TokenFile(t *testing.T) {
+func TestNewSagaDataClient_TokenFile(t *testing.T) {
 	receivedToken := ""
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		receivedToken = r.Header.Get("X-Auth-Token")
@@ -53,7 +53,7 @@ func TestNewGenesisCloudClient_TokenFile(t *testing.T) {
 		t.Fatalf("failed to write token file: %v", err)
 	}
 
-	client, err := NewGenesisCloudClient(ClientConfig{
+	client, err := NewSagaDataClient(ClientConfig{
 		Endpoint:  server.URL,
 		TokenFile: tokenFile,
 	})
@@ -71,7 +71,7 @@ func TestNewGenesisCloudClient_TokenFile(t *testing.T) {
 	}
 }
 
-func TestNewGenesisCloudClient_TokenFileDynamicUpdate(t *testing.T) {
+func TestNewSagaDataClient_TokenFileDynamicUpdate(t *testing.T) {
 	receivedTokens := []string{}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		receivedTokens = append(receivedTokens, r.Header.Get("X-Auth-Token"))
@@ -88,7 +88,7 @@ func TestNewGenesisCloudClient_TokenFileDynamicUpdate(t *testing.T) {
 		t.Fatalf("failed to write token file: %v", err)
 	}
 
-	client, err := NewGenesisCloudClient(ClientConfig{
+	client, err := NewSagaDataClient(ClientConfig{
 		Endpoint:  server.URL,
 		TokenFile: tokenFile,
 	})
@@ -124,7 +124,7 @@ func TestNewGenesisCloudClient_TokenFileDynamicUpdate(t *testing.T) {
 	}
 }
 
-func TestNewGenesisCloudClient_ErrorCases(t *testing.T) {
+func TestNewSagaDataClient_ErrorCases(t *testing.T) {
 	tests := []struct {
 		name        string
 		config      ClientConfig
@@ -148,7 +148,7 @@ func TestNewGenesisCloudClient_ErrorCases(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := NewGenesisCloudClient(tt.config)
+			_, err := NewSagaDataClient(tt.config)
 			if err == nil {
 				t.Fatal("expected error, got nil")
 			}
@@ -159,14 +159,14 @@ func TestNewGenesisCloudClient_ErrorCases(t *testing.T) {
 	}
 }
 
-func TestNewGenesisCloudClient_TokenFileErrors(t *testing.T) {
+func TestNewSagaDataClient_TokenFileErrors(t *testing.T) {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}))
 	defer server.Close()
 
 	t.Run("missing file", func(t *testing.T) {
-		client, err := NewGenesisCloudClient(ClientConfig{
+		client, err := NewSagaDataClient(ClientConfig{
 			Endpoint:  server.URL,
 			TokenFile: "/nonexistent/path/to/token",
 		})
@@ -187,7 +187,7 @@ func TestNewGenesisCloudClient_TokenFileErrors(t *testing.T) {
 			t.Fatalf("failed to write token file: %v", err)
 		}
 
-		client, err := NewGenesisCloudClient(ClientConfig{
+		client, err := NewSagaDataClient(ClientConfig{
 			Endpoint:  server.URL,
 			TokenFile: tokenFile,
 		})
@@ -208,7 +208,7 @@ func TestNewGenesisCloudClient_TokenFileErrors(t *testing.T) {
 			t.Fatalf("failed to write token file: %v", err)
 		}
 
-		client, err := NewGenesisCloudClient(ClientConfig{
+		client, err := NewSagaDataClient(ClientConfig{
 			Endpoint:  server.URL,
 			TokenFile: tokenFile,
 		})
