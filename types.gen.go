@@ -259,7 +259,7 @@ var AllCreateFloatingIPJSONBodyVersions = []CreateFloatingIPJSONBodyVersion{
 
 // Error defines model for Error.
 type Error struct {
-	// Code The Genesis Cloud error code.
+	// Code The Saga Data error code.
 	// Check the [developer documentation](https://developers.com/#error-codes) for more information on error codes.
 	Code string `json:"code"`
 
