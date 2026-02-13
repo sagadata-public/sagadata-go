@@ -171,6 +171,47 @@ type ClientInterface interface {
 	// GetInstanceUserMetadata request
 	GetInstanceUserMetadata(ctx context.Context, instanceId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListKubernetesClusters request
+	ListKubernetesClusters(ctx context.Context, params *ListKubernetesClustersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateKubernetesClusterWithBody request with any body
+	CreateKubernetesClusterWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateKubernetesCluster(ctx context.Context, body CreateKubernetesClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteKubernetesCluster request
+	DeleteKubernetesCluster(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetKubernetesCluster request
+	GetKubernetesCluster(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateKubernetesClusterWithBody request with any body
+	UpdateKubernetesClusterWithBody(ctx context.Context, clusterId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateKubernetesCluster(ctx context.Context, clusterId string, body UpdateKubernetesClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetKubernetesClusterCredentials request
+	GetKubernetesClusterCredentials(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// ListPrivateNetworks request
+	ListPrivateNetworks(ctx context.Context, params *ListPrivateNetworksParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreatePrivateNetworkWithBody request with any body
+	CreatePrivateNetworkWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreatePrivateNetwork(ctx context.Context, body CreatePrivateNetworkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeletePrivateNetwork request
+	DeletePrivateNetwork(ctx context.Context, networkId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetPrivateNetwork request
+	GetPrivateNetwork(ctx context.Context, networkId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdatePrivateNetworkWithBody request with any body
+	UpdatePrivateNetworkWithBody(ctx context.Context, networkId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdatePrivateNetwork(ctx context.Context, networkId string, body UpdatePrivateNetworkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetQuotas request
 	GetQuotas(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -609,6 +650,186 @@ func (c *Client) CreateInstanceSnapshot(ctx context.Context, instanceId string, 
 
 func (c *Client) GetInstanceUserMetadata(ctx context.Context, instanceId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetInstanceUserMetadataRequest(c.Server, instanceId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListKubernetesClusters(ctx context.Context, params *ListKubernetesClustersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListKubernetesClustersRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateKubernetesClusterWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateKubernetesClusterRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateKubernetesCluster(ctx context.Context, body CreateKubernetesClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateKubernetesClusterRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteKubernetesCluster(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteKubernetesClusterRequest(c.Server, clusterId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetKubernetesCluster(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetKubernetesClusterRequest(c.Server, clusterId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateKubernetesClusterWithBody(ctx context.Context, clusterId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateKubernetesClusterRequestWithBody(c.Server, clusterId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateKubernetesCluster(ctx context.Context, clusterId string, body UpdateKubernetesClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateKubernetesClusterRequest(c.Server, clusterId, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetKubernetesClusterCredentials(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetKubernetesClusterCredentialsRequest(c.Server, clusterId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListPrivateNetworks(ctx context.Context, params *ListPrivateNetworksParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListPrivateNetworksRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePrivateNetworkWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePrivateNetworkRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreatePrivateNetwork(ctx context.Context, body CreatePrivateNetworkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreatePrivateNetworkRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeletePrivateNetwork(ctx context.Context, networkId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeletePrivateNetworkRequest(c.Server, networkId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetPrivateNetwork(ctx context.Context, networkId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetPrivateNetworkRequest(c.Server, networkId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdatePrivateNetworkWithBody(ctx context.Context, networkId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePrivateNetworkRequestWithBody(c.Server, networkId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdatePrivateNetwork(ctx context.Context, networkId string, body UpdatePrivateNetworkJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdatePrivateNetworkRequest(c.Server, networkId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -2034,6 +2255,480 @@ func NewGetInstanceUserMetadataRequest(server string, instanceId string) (*http.
 	return req, nil
 }
 
+// NewListKubernetesClustersRequest generates requests for ListKubernetesClusters
+func NewListKubernetesClustersRequest(server string, params *ListKubernetesClustersParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/kubernetes-clusters")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.PerPage != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateKubernetesClusterRequest calls the generic CreateKubernetesCluster builder with application/json body
+func NewCreateKubernetesClusterRequest(server string, body CreateKubernetesClusterJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateKubernetesClusterRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateKubernetesClusterRequestWithBody generates requests for CreateKubernetesCluster with any type of body
+func NewCreateKubernetesClusterRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/kubernetes-clusters")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteKubernetesClusterRequest generates requests for DeleteKubernetesCluster
+func NewDeleteKubernetesClusterRequest(server string, clusterId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "cluster_id", runtime.ParamLocationPath, clusterId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/kubernetes-clusters/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetKubernetesClusterRequest generates requests for GetKubernetesCluster
+func NewGetKubernetesClusterRequest(server string, clusterId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "cluster_id", runtime.ParamLocationPath, clusterId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/kubernetes-clusters/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateKubernetesClusterRequest calls the generic UpdateKubernetesCluster builder with application/json body
+func NewUpdateKubernetesClusterRequest(server string, clusterId string, body UpdateKubernetesClusterJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateKubernetesClusterRequestWithBody(server, clusterId, "application/json", bodyReader)
+}
+
+// NewUpdateKubernetesClusterRequestWithBody generates requests for UpdateKubernetesCluster with any type of body
+func NewUpdateKubernetesClusterRequestWithBody(server string, clusterId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "cluster_id", runtime.ParamLocationPath, clusterId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/kubernetes-clusters/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetKubernetesClusterCredentialsRequest generates requests for GetKubernetesClusterCredentials
+func NewGetKubernetesClusterCredentialsRequest(server string, clusterId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "cluster_id", runtime.ParamLocationPath, clusterId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/kubernetes-clusters/%s/credentials", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewListPrivateNetworksRequest generates requests for ListPrivateNetworks
+func NewListPrivateNetworksRequest(server string, params *ListPrivateNetworksParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/private-networks")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.PerPage != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreatePrivateNetworkRequest calls the generic CreatePrivateNetwork builder with application/json body
+func NewCreatePrivateNetworkRequest(server string, body CreatePrivateNetworkJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreatePrivateNetworkRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreatePrivateNetworkRequestWithBody generates requests for CreatePrivateNetwork with any type of body
+func NewCreatePrivateNetworkRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/private-networks")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeletePrivateNetworkRequest generates requests for DeletePrivateNetwork
+func NewDeletePrivateNetworkRequest(server string, networkId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "network_id", runtime.ParamLocationPath, networkId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/private-networks/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetPrivateNetworkRequest generates requests for GetPrivateNetwork
+func NewGetPrivateNetworkRequest(server string, networkId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "network_id", runtime.ParamLocationPath, networkId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/private-networks/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdatePrivateNetworkRequest calls the generic UpdatePrivateNetwork builder with application/json body
+func NewUpdatePrivateNetworkRequest(server string, networkId string, body UpdatePrivateNetworkJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdatePrivateNetworkRequestWithBody(server, networkId, "application/json", bodyReader)
+}
+
+// NewUpdatePrivateNetworkRequestWithBody generates requests for UpdatePrivateNetwork with any type of body
+func NewUpdatePrivateNetworkRequestWithBody(server string, networkId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "network_id", runtime.ParamLocationPath, networkId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/private-networks/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetQuotasRequest generates requests for GetQuotas
 func NewGetQuotasRequest(server string) (*http.Request, error) {
 	var err error
@@ -3140,6 +3835,47 @@ type ClientWithResponsesInterface interface {
 	// GetInstanceUserMetadataWithResponse request
 	GetInstanceUserMetadataWithResponse(ctx context.Context, instanceId string, reqEditors ...RequestEditorFn) (*GetInstanceUserMetadataResponse, error)
 
+	// ListKubernetesClustersWithResponse request
+	ListKubernetesClustersWithResponse(ctx context.Context, params *ListKubernetesClustersParams, reqEditors ...RequestEditorFn) (*ListKubernetesClustersResponse, error)
+
+	// CreateKubernetesClusterWithBodyWithResponse request with any body
+	CreateKubernetesClusterWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateKubernetesClusterResponse, error)
+
+	CreateKubernetesClusterWithResponse(ctx context.Context, body CreateKubernetesClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateKubernetesClusterResponse, error)
+
+	// DeleteKubernetesClusterWithResponse request
+	DeleteKubernetesClusterWithResponse(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*DeleteKubernetesClusterResponse, error)
+
+	// GetKubernetesClusterWithResponse request
+	GetKubernetesClusterWithResponse(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*GetKubernetesClusterResponse, error)
+
+	// UpdateKubernetesClusterWithBodyWithResponse request with any body
+	UpdateKubernetesClusterWithBodyWithResponse(ctx context.Context, clusterId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateKubernetesClusterResponse, error)
+
+	UpdateKubernetesClusterWithResponse(ctx context.Context, clusterId string, body UpdateKubernetesClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateKubernetesClusterResponse, error)
+
+	// GetKubernetesClusterCredentialsWithResponse request
+	GetKubernetesClusterCredentialsWithResponse(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*GetKubernetesClusterCredentialsResponse, error)
+
+	// ListPrivateNetworksWithResponse request
+	ListPrivateNetworksWithResponse(ctx context.Context, params *ListPrivateNetworksParams, reqEditors ...RequestEditorFn) (*ListPrivateNetworksResponse, error)
+
+	// CreatePrivateNetworkWithBodyWithResponse request with any body
+	CreatePrivateNetworkWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePrivateNetworkResponse, error)
+
+	CreatePrivateNetworkWithResponse(ctx context.Context, body CreatePrivateNetworkJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePrivateNetworkResponse, error)
+
+	// DeletePrivateNetworkWithResponse request
+	DeletePrivateNetworkWithResponse(ctx context.Context, networkId string, reqEditors ...RequestEditorFn) (*DeletePrivateNetworkResponse, error)
+
+	// GetPrivateNetworkWithResponse request
+	GetPrivateNetworkWithResponse(ctx context.Context, networkId string, reqEditors ...RequestEditorFn) (*GetPrivateNetworkResponse, error)
+
+	// UpdatePrivateNetworkWithBodyWithResponse request with any body
+	UpdatePrivateNetworkWithBodyWithResponse(ctx context.Context, networkId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePrivateNetworkResponse, error)
+
+	UpdatePrivateNetworkWithResponse(ctx context.Context, networkId string, body UpdatePrivateNetworkJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePrivateNetworkResponse, error)
+
 	// GetQuotasWithResponse request
 	GetQuotasWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetQuotasResponse, error)
 
@@ -3724,6 +4460,257 @@ func (r GetInstanceUserMetadataResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetInstanceUserMetadataResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListKubernetesClustersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PaginatedKubernetesClustersResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r ListKubernetesClustersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListKubernetesClustersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateKubernetesClusterResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *SingleKubernetesClusterResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateKubernetesClusterResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateKubernetesClusterResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteKubernetesClusterResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteKubernetesClusterResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteKubernetesClusterResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetKubernetesClusterResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SingleKubernetesClusterResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetKubernetesClusterResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetKubernetesClusterResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateKubernetesClusterResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SingleKubernetesClusterResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateKubernetesClusterResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateKubernetesClusterResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetKubernetesClusterCredentialsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *K8sClusterCredentialsResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetKubernetesClusterCredentialsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetKubernetesClusterCredentialsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListPrivateNetworksResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PaginatedPrivateNetworksResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r ListPrivateNetworksResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListPrivateNetworksResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreatePrivateNetworkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *SinglePrivateNetworkResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r CreatePrivateNetworkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreatePrivateNetworkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeletePrivateNetworkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r DeletePrivateNetworkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeletePrivateNetworkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetPrivateNetworkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SinglePrivateNetworkResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetPrivateNetworkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetPrivateNetworkResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdatePrivateNetworkResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SinglePrivateNetworkResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdatePrivateNetworkResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdatePrivateNetworkResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -4515,6 +5502,137 @@ func (c *ClientWithResponses) GetInstanceUserMetadataWithResponse(ctx context.Co
 		return nil, err
 	}
 	return ParseGetInstanceUserMetadataResponse(rsp)
+}
+
+// ListKubernetesClustersWithResponse request returning *ListKubernetesClustersResponse
+func (c *ClientWithResponses) ListKubernetesClustersWithResponse(ctx context.Context, params *ListKubernetesClustersParams, reqEditors ...RequestEditorFn) (*ListKubernetesClustersResponse, error) {
+	rsp, err := c.ListKubernetesClusters(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListKubernetesClustersResponse(rsp)
+}
+
+// CreateKubernetesClusterWithBodyWithResponse request with arbitrary body returning *CreateKubernetesClusterResponse
+func (c *ClientWithResponses) CreateKubernetesClusterWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateKubernetesClusterResponse, error) {
+	rsp, err := c.CreateKubernetesClusterWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateKubernetesClusterResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateKubernetesClusterWithResponse(ctx context.Context, body CreateKubernetesClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateKubernetesClusterResponse, error) {
+	rsp, err := c.CreateKubernetesCluster(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateKubernetesClusterResponse(rsp)
+}
+
+// DeleteKubernetesClusterWithResponse request returning *DeleteKubernetesClusterResponse
+func (c *ClientWithResponses) DeleteKubernetesClusterWithResponse(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*DeleteKubernetesClusterResponse, error) {
+	rsp, err := c.DeleteKubernetesCluster(ctx, clusterId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteKubernetesClusterResponse(rsp)
+}
+
+// GetKubernetesClusterWithResponse request returning *GetKubernetesClusterResponse
+func (c *ClientWithResponses) GetKubernetesClusterWithResponse(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*GetKubernetesClusterResponse, error) {
+	rsp, err := c.GetKubernetesCluster(ctx, clusterId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetKubernetesClusterResponse(rsp)
+}
+
+// UpdateKubernetesClusterWithBodyWithResponse request with arbitrary body returning *UpdateKubernetesClusterResponse
+func (c *ClientWithResponses) UpdateKubernetesClusterWithBodyWithResponse(ctx context.Context, clusterId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateKubernetesClusterResponse, error) {
+	rsp, err := c.UpdateKubernetesClusterWithBody(ctx, clusterId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateKubernetesClusterResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateKubernetesClusterWithResponse(ctx context.Context, clusterId string, body UpdateKubernetesClusterJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateKubernetesClusterResponse, error) {
+	rsp, err := c.UpdateKubernetesCluster(ctx, clusterId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateKubernetesClusterResponse(rsp)
+}
+
+// GetKubernetesClusterCredentialsWithResponse request returning *GetKubernetesClusterCredentialsResponse
+func (c *ClientWithResponses) GetKubernetesClusterCredentialsWithResponse(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*GetKubernetesClusterCredentialsResponse, error) {
+	rsp, err := c.GetKubernetesClusterCredentials(ctx, clusterId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetKubernetesClusterCredentialsResponse(rsp)
+}
+
+// ListPrivateNetworksWithResponse request returning *ListPrivateNetworksResponse
+func (c *ClientWithResponses) ListPrivateNetworksWithResponse(ctx context.Context, params *ListPrivateNetworksParams, reqEditors ...RequestEditorFn) (*ListPrivateNetworksResponse, error) {
+	rsp, err := c.ListPrivateNetworks(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListPrivateNetworksResponse(rsp)
+}
+
+// CreatePrivateNetworkWithBodyWithResponse request with arbitrary body returning *CreatePrivateNetworkResponse
+func (c *ClientWithResponses) CreatePrivateNetworkWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreatePrivateNetworkResponse, error) {
+	rsp, err := c.CreatePrivateNetworkWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePrivateNetworkResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreatePrivateNetworkWithResponse(ctx context.Context, body CreatePrivateNetworkJSONRequestBody, reqEditors ...RequestEditorFn) (*CreatePrivateNetworkResponse, error) {
+	rsp, err := c.CreatePrivateNetwork(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreatePrivateNetworkResponse(rsp)
+}
+
+// DeletePrivateNetworkWithResponse request returning *DeletePrivateNetworkResponse
+func (c *ClientWithResponses) DeletePrivateNetworkWithResponse(ctx context.Context, networkId string, reqEditors ...RequestEditorFn) (*DeletePrivateNetworkResponse, error) {
+	rsp, err := c.DeletePrivateNetwork(ctx, networkId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeletePrivateNetworkResponse(rsp)
+}
+
+// GetPrivateNetworkWithResponse request returning *GetPrivateNetworkResponse
+func (c *ClientWithResponses) GetPrivateNetworkWithResponse(ctx context.Context, networkId string, reqEditors ...RequestEditorFn) (*GetPrivateNetworkResponse, error) {
+	rsp, err := c.GetPrivateNetwork(ctx, networkId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetPrivateNetworkResponse(rsp)
+}
+
+// UpdatePrivateNetworkWithBodyWithResponse request with arbitrary body returning *UpdatePrivateNetworkResponse
+func (c *ClientWithResponses) UpdatePrivateNetworkWithBodyWithResponse(ctx context.Context, networkId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdatePrivateNetworkResponse, error) {
+	rsp, err := c.UpdatePrivateNetworkWithBody(ctx, networkId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdatePrivateNetworkResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdatePrivateNetworkWithResponse(ctx context.Context, networkId string, body UpdatePrivateNetworkJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdatePrivateNetworkResponse, error) {
+	rsp, err := c.UpdatePrivateNetwork(ctx, networkId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdatePrivateNetworkResponse(rsp)
 }
 
 // GetQuotasWithResponse request returning *GetQuotasResponse
@@ -5477,6 +6595,355 @@ func ParseGetInstanceUserMetadataResponse(rsp *http.Response) (*GetInstanceUserM
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest InstanceGetInstanceUserMetadataResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListKubernetesClustersResponse parses an HTTP response from a ListKubernetesClustersWithResponse call
+func ParseListKubernetesClustersResponse(rsp *http.Response) (*ListKubernetesClustersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListKubernetesClustersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PaginatedKubernetesClustersResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateKubernetesClusterResponse parses an HTTP response from a CreateKubernetesClusterWithResponse call
+func ParseCreateKubernetesClusterResponse(rsp *http.Response) (*CreateKubernetesClusterResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateKubernetesClusterResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest SingleKubernetesClusterResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteKubernetesClusterResponse parses an HTTP response from a DeleteKubernetesClusterWithResponse call
+func ParseDeleteKubernetesClusterResponse(rsp *http.Response) (*DeleteKubernetesClusterResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteKubernetesClusterResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetKubernetesClusterResponse parses an HTTP response from a GetKubernetesClusterWithResponse call
+func ParseGetKubernetesClusterResponse(rsp *http.Response) (*GetKubernetesClusterResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetKubernetesClusterResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SingleKubernetesClusterResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateKubernetesClusterResponse parses an HTTP response from a UpdateKubernetesClusterWithResponse call
+func ParseUpdateKubernetesClusterResponse(rsp *http.Response) (*UpdateKubernetesClusterResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateKubernetesClusterResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SingleKubernetesClusterResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetKubernetesClusterCredentialsResponse parses an HTTP response from a GetKubernetesClusterCredentialsWithResponse call
+func ParseGetKubernetesClusterCredentialsResponse(rsp *http.Response) (*GetKubernetesClusterCredentialsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetKubernetesClusterCredentialsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest K8sClusterCredentialsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListPrivateNetworksResponse parses an HTTP response from a ListPrivateNetworksWithResponse call
+func ParseListPrivateNetworksResponse(rsp *http.Response) (*ListPrivateNetworksResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListPrivateNetworksResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PaginatedPrivateNetworksResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreatePrivateNetworkResponse parses an HTTP response from a CreatePrivateNetworkWithResponse call
+func ParseCreatePrivateNetworkResponse(rsp *http.Response) (*CreatePrivateNetworkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreatePrivateNetworkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest SinglePrivateNetworkResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeletePrivateNetworkResponse parses an HTTP response from a DeletePrivateNetworkWithResponse call
+func ParseDeletePrivateNetworkResponse(rsp *http.Response) (*DeletePrivateNetworkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeletePrivateNetworkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetPrivateNetworkResponse parses an HTTP response from a GetPrivateNetworkWithResponse call
+func ParseGetPrivateNetworkResponse(rsp *http.Response) (*GetPrivateNetworkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetPrivateNetworkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SinglePrivateNetworkResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdatePrivateNetworkResponse parses an HTTP response from a UpdatePrivateNetworkWithResponse call
+func ParseUpdatePrivateNetworkResponse(rsp *http.Response) (*UpdatePrivateNetworkResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdatePrivateNetworkResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SinglePrivateNetworkResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
