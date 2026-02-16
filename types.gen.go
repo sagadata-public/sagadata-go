@@ -130,6 +130,21 @@ var AllInstanceStatuss = []InstanceStatus{
 	InstanceStatusStopping,
 }
 
+// Defines values for KubernetesClusterStatus.
+const (
+	KubernetesClusterStatusActive   KubernetesClusterStatus = "active"
+	KubernetesClusterStatusCreating KubernetesClusterStatus = "creating"
+	KubernetesClusterStatusDeleting KubernetesClusterStatus = "deleting"
+	KubernetesClusterStatusError    KubernetesClusterStatus = "error"
+)
+
+var AllKubernetesClusterStatuss = []KubernetesClusterStatus{
+	KubernetesClusterStatusActive,
+	KubernetesClusterStatusCreating,
+	KubernetesClusterStatusDeleting,
+	KubernetesClusterStatusError,
+}
+
 // Defines values for OSType.
 const (
 	OSTypeLinux   OSType = "linux"
@@ -139,6 +154,21 @@ const (
 var AllOSTypes = []OSType{
 	OSTypeLinux,
 	OSTypeWindows,
+}
+
+// Defines values for PrivateNetworkStatus.
+const (
+	PrivateNetworkStatusCreated  PrivateNetworkStatus = "created"
+	PrivateNetworkStatusCreating PrivateNetworkStatus = "creating"
+	PrivateNetworkStatusDeleting PrivateNetworkStatus = "deleting"
+	PrivateNetworkStatusError    PrivateNetworkStatus = "error"
+)
+
+var AllPrivateNetworkStatuss = []PrivateNetworkStatus{
+	PrivateNetworkStatusCreated,
+	PrivateNetworkStatusCreating,
+	PrivateNetworkStatusDeleting,
+	PrivateNetworkStatusError,
 }
 
 // Defines values for Region.
@@ -416,6 +446,9 @@ type Instance struct {
 		Name string `json:"name"`
 	} `json:"image"`
 
+	// K8sCluster Kubernetes cluster this instance belongs to
+	K8sCluster *string `json:"k8s_cluster"`
+
 	// Name The human-readable name set for the instance.
 	Name InstanceName `json:"name"`
 
@@ -497,6 +530,9 @@ type InstanceHostname = string
 // When set to `true`, it"s not possible to destroy the instance until it"s switched to `false`.
 // Set to `true` automatically for long-term billed instances.
 type InstanceIsProtected = bool
+
+// InstanceK8sCluster Kubernetes cluster this instance belongs to
+type InstanceK8sCluster = string
 
 // InstanceName The human-readable name set for the instance.
 type InstanceName = string
@@ -582,8 +618,61 @@ type InstancesAvailability struct {
 	} `json:"availability"`
 }
 
+// KubernetesCluster defines model for KubernetesCluster.
+type KubernetesCluster struct {
+	CreatedAt Timestamp `json:"created_at"`
+
+	// Id A unique identifier for each Kubernetes cluster. This is automatically generated.
+	Id string `json:"id"`
+
+	// Name The human-readable name for the Kubernetes cluster.
+	Name string `json:"name"`
+
+	// Network The network ID for the cluster.
+	Network *string `json:"network"`
+
+	// Status The Kubernetes cluster status.
+	Status    KubernetesClusterStatus `json:"status"`
+	UpdatedAt Timestamp               `json:"updated_at"`
+}
+
+// KubernetesClusterStatus The Kubernetes cluster status.
+type KubernetesClusterStatus string
+
 // OSType The OS type.
 type OSType string
+
+// PrivateNetwork defines model for PrivateNetwork.
+type PrivateNetwork struct {
+	// CidrV4 The IPv4 CIDR block for the private network.
+	CidrV4 *string `json:"cidr_v4"`
+
+	// CidrV6 The IPv6 CIDR block for the private network.
+	CidrV6    *string   `json:"cidr_v6"`
+	CreatedAt Timestamp `json:"created_at"`
+
+	// Description The human-readable description for the private network.
+	Description string `json:"description"`
+
+	// Id A unique identifier for each private network. This is automatically generated.
+	Id PrivateNetworkId `json:"id"`
+
+	// Name The human-readable name for the private network.
+	Name string `json:"name"`
+
+	// Region The region identifier.
+	Region Region `json:"region"`
+
+	// Status The private network status.
+	Status    PrivateNetworkStatus `json:"status"`
+	UpdatedAt Timestamp            `json:"updated_at"`
+}
+
+// PrivateNetworkStatus The private network status.
+type PrivateNetworkStatus string
+
+// PrivateNetworkId A unique identifier for each private network. This is automatically generated.
+type PrivateNetworkId = string
 
 // Quota defines model for Quota.
 type Quota struct {
@@ -788,6 +877,15 @@ type InstanceGetInstanceUserMetadataResponse map[string]interface{}
 // InstancesAvailabilityResponse defines model for InstancesAvailabilityResponse.
 type InstancesAvailabilityResponse = InstancesAvailability
 
+// K8sClusterCredentialsResponse defines model for K8sClusterCredentialsResponse.
+type K8sClusterCredentialsResponse struct {
+	// JoinCommand The join command for worker nodes to join the cluster.
+	JoinCommand *string `json:"join_command"`
+
+	// Kubeconfig The kubeconfig for accessing the Kubernetes cluster.
+	Kubeconfig string `json:"kubeconfig"`
+}
+
 // PaginatedFilesystemsResponse defines model for PaginatedFilesystemsResponse.
 type PaginatedFilesystemsResponse struct {
 	Filesystems []Filesystem `json:"filesystems"`
@@ -818,6 +916,22 @@ type PaginatedInstancesResponse struct {
 	Page       int        `json:"page"`
 	PerPage    int        `json:"per_page"`
 	TotalCount int        `json:"total_count"`
+}
+
+// PaginatedKubernetesClustersResponse defines model for PaginatedKubernetesClustersResponse.
+type PaginatedKubernetesClustersResponse struct {
+	Clusters   []KubernetesCluster `json:"clusters"`
+	Page       int                 `json:"page"`
+	PerPage    int                 `json:"per_page"`
+	TotalCount int                 `json:"total_count"`
+}
+
+// PaginatedPrivateNetworksResponse defines model for PaginatedPrivateNetworksResponse.
+type PaginatedPrivateNetworksResponse struct {
+	Page            int              `json:"page"`
+	PerPage         int              `json:"per_page"`
+	PrivateNetworks []PrivateNetwork `json:"private_networks"`
+	TotalCount      int              `json:"total_count"`
 }
 
 // PaginatedSSHKeysResponse defines model for PaginatedSSHKeysResponse.
@@ -875,6 +989,16 @@ type SingleFloatingIPResponse struct {
 // SingleInstanceResponse defines model for SingleInstanceResponse.
 type SingleInstanceResponse struct {
 	Instance Instance `json:"instance"`
+}
+
+// SingleKubernetesClusterResponse defines model for SingleKubernetesClusterResponse.
+type SingleKubernetesClusterResponse struct {
+	Cluster KubernetesCluster `json:"cluster"`
+}
+
+// SinglePrivateNetworkResponse defines model for SinglePrivateNetworkResponse.
+type SinglePrivateNetworkResponse struct {
+	PrivateNetwork PrivateNetwork `json:"private_network"`
 }
 
 // SingleSSHKeyResponse defines model for SingleSSHKeyResponse.
@@ -1007,6 +1131,9 @@ type CreateInstanceJSONBody struct {
 	// Set to `true` automatically for long-term billed instances.
 	IsProtected *InstanceIsProtected `json:"is_protected,omitempty"`
 
+	// K8sCluster Kubernetes cluster this instance belongs to
+	K8sCluster *InstanceK8sCluster `json:"k8s_cluster"`
+
 	// Metadata Option to provide metadata.
 	Metadata *struct {
 		// StartupScript A plain text bash script or "cloud-config" file that will be executed after the first instance boot.
@@ -1027,6 +1154,9 @@ type CreateInstanceJSONBody struct {
 
 	// PlacementOption The placement option identifier in which instances are physically located relative to each other within a zone.
 	PlacementOption *string `json:"placement_option,omitempty"`
+
+	// PrivateNetworks An array of network ids.
+	PrivateNetworks *[]PrivateNetworkId `json:"private_networks,omitempty"`
 
 	// PublicIpv6 A boolean value indicating whether the instance should have an ipv6 address or not.
 	PublicIpv6 *InstancePublicIpv6 `json:"public_ipv6,omitempty"`
@@ -1092,6 +1222,60 @@ type CreateInstanceSnapshotJSONBody struct {
 
 	// ReplicatedRegion The region identifier.
 	ReplicatedRegion *Region `json:"replicated_region,omitempty"`
+}
+
+// ListKubernetesClustersParams defines parameters for ListKubernetesClusters.
+type ListKubernetesClustersParams struct {
+	Page    *PageQueryParameter    `form:"page,omitempty" json:"page,omitempty"`
+	PerPage *PerPageQueryParameter `form:"per_page,omitempty" json:"per_page,omitempty"`
+}
+
+// CreateKubernetesClusterJSONBody defines parameters for CreateKubernetesCluster.
+type CreateKubernetesClusterJSONBody struct {
+	// Id Optional ID for the cluster. If not provided, one will be generated.
+	Id *string `json:"id,omitempty"`
+
+	// Network The network ID for the cluster.
+	Network *string `json:"network"`
+}
+
+// UpdateKubernetesClusterJSONBody defines parameters for UpdateKubernetesCluster.
+type UpdateKubernetesClusterJSONBody struct {
+	// Network The network ID for the cluster.
+	Network *string `json:"network"`
+}
+
+// ListPrivateNetworksParams defines parameters for ListPrivateNetworks.
+type ListPrivateNetworksParams struct {
+	Page    *PageQueryParameter    `form:"page,omitempty" json:"page,omitempty"`
+	PerPage *PerPageQueryParameter `form:"per_page,omitempty" json:"per_page,omitempty"`
+}
+
+// CreatePrivateNetworkJSONBody defines parameters for CreatePrivateNetwork.
+type CreatePrivateNetworkJSONBody struct {
+	// CidrV4 The IPv4 CIDR block for the private network.
+	CidrV4 *string `json:"cidr_v4,omitempty"`
+
+	// CidrV6 The IPv6 CIDR block for the private network.
+	CidrV6 *string `json:"cidr_v6,omitempty"`
+
+	// Description The human-readable description set for the private network.
+	Description *string `json:"description,omitempty"`
+
+	// Name The human-readable name set for the private network.
+	Name string `json:"name"`
+
+	// Region The region identifier.
+	Region Region `json:"region"`
+}
+
+// UpdatePrivateNetworkJSONBody defines parameters for UpdatePrivateNetwork.
+type UpdatePrivateNetworkJSONBody struct {
+	// Description The human-readable description set for the private network.
+	Description *string `json:"description,omitempty"`
+
+	// Name The human-readable name set for the private network.
+	Name *string `json:"name,omitempty"`
 }
 
 // ListSecurityGroupsPaginatedParams defines parameters for ListSecurityGroupsPaginated.
@@ -1246,6 +1430,18 @@ type PerformInstanceActionJSONRequestBody PerformInstanceActionJSONBody
 
 // CreateInstanceSnapshotJSONRequestBody defines body for CreateInstanceSnapshot for application/json ContentType.
 type CreateInstanceSnapshotJSONRequestBody CreateInstanceSnapshotJSONBody
+
+// CreateKubernetesClusterJSONRequestBody defines body for CreateKubernetesCluster for application/json ContentType.
+type CreateKubernetesClusterJSONRequestBody CreateKubernetesClusterJSONBody
+
+// UpdateKubernetesClusterJSONRequestBody defines body for UpdateKubernetesCluster for application/json ContentType.
+type UpdateKubernetesClusterJSONRequestBody UpdateKubernetesClusterJSONBody
+
+// CreatePrivateNetworkJSONRequestBody defines body for CreatePrivateNetwork for application/json ContentType.
+type CreatePrivateNetworkJSONRequestBody CreatePrivateNetworkJSONBody
+
+// UpdatePrivateNetworkJSONRequestBody defines body for UpdatePrivateNetwork for application/json ContentType.
+type UpdatePrivateNetworkJSONRequestBody UpdatePrivateNetworkJSONBody
 
 // CreateSecurityGroupJSONRequestBody defines body for CreateSecurityGroup for application/json ContentType.
 type CreateSecurityGroupJSONRequestBody CreateSecurityGroupJSONBody
