@@ -193,6 +193,25 @@ type ClientInterface interface {
 	// GetKubernetesClusterCredentials request
 	GetKubernetesClusterCredentials(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ListLoadbalancers request
+	ListLoadbalancers(ctx context.Context, params *ListLoadbalancersParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateLoadbalancerWithBody request with any body
+	CreateLoadbalancerWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateLoadbalancer(ctx context.Context, body CreateLoadbalancerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// DeleteLoadbalancer request
+	DeleteLoadbalancer(ctx context.Context, loadbalancerId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetLoadbalancer request
+	GetLoadbalancer(ctx context.Context, loadbalancerId string, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateLoadbalancerWithBody request with any body
+	UpdateLoadbalancerWithBody(ctx context.Context, loadbalancerId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateLoadbalancer(ctx context.Context, loadbalancerId string, body UpdateLoadbalancerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// ListPrivateNetworks request
 	ListPrivateNetworks(ctx context.Context, params *ListPrivateNetworksParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -746,6 +765,90 @@ func (c *Client) UpdateKubernetesCluster(ctx context.Context, clusterId string, 
 
 func (c *Client) GetKubernetesClusterCredentials(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetKubernetesClusterCredentialsRequest(c.Server, clusterId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ListLoadbalancers(ctx context.Context, params *ListLoadbalancersParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewListLoadbalancersRequest(c.Server, params)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateLoadbalancerWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateLoadbalancerRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateLoadbalancer(ctx context.Context, body CreateLoadbalancerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateLoadbalancerRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) DeleteLoadbalancer(ctx context.Context, loadbalancerId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewDeleteLoadbalancerRequest(c.Server, loadbalancerId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetLoadbalancer(ctx context.Context, loadbalancerId string, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetLoadbalancerRequest(c.Server, loadbalancerId)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateLoadbalancerWithBody(ctx context.Context, loadbalancerId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateLoadbalancerRequestWithBody(c.Server, loadbalancerId, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateLoadbalancer(ctx context.Context, loadbalancerId string, body UpdateLoadbalancerJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateLoadbalancerRequest(c.Server, loadbalancerId, body)
 	if err != nil {
 		return nil, err
 	}
@@ -2509,6 +2612,226 @@ func NewGetKubernetesClusterCredentialsRequest(server string, clusterId string) 
 	return req, nil
 }
 
+// NewListLoadbalancersRequest generates requests for ListLoadbalancers
+func NewListLoadbalancersRequest(server string, params *ListLoadbalancersParams) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/loadbalancers")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	if params != nil {
+		queryValues := queryURL.Query()
+
+		if params.Page != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "page", runtime.ParamLocationQuery, *params.Page); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.PerPage != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "per_page", runtime.ParamLocationQuery, *params.PerPage); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		queryURL.RawQuery = queryValues.Encode()
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateLoadbalancerRequest calls the generic CreateLoadbalancer builder with application/json body
+func NewCreateLoadbalancerRequest(server string, body CreateLoadbalancerJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateLoadbalancerRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateLoadbalancerRequestWithBody generates requests for CreateLoadbalancer with any type of body
+func NewCreateLoadbalancerRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/loadbalancers")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewDeleteLoadbalancerRequest generates requests for DeleteLoadbalancer
+func NewDeleteLoadbalancerRequest(server string, loadbalancerId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "loadbalancer_id", runtime.ParamLocationPath, loadbalancerId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/loadbalancers/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("DELETE", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetLoadbalancerRequest generates requests for GetLoadbalancer
+func NewGetLoadbalancerRequest(server string, loadbalancerId string) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "loadbalancer_id", runtime.ParamLocationPath, loadbalancerId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/loadbalancers/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateLoadbalancerRequest calls the generic UpdateLoadbalancer builder with application/json body
+func NewUpdateLoadbalancerRequest(server string, loadbalancerId string, body UpdateLoadbalancerJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateLoadbalancerRequestWithBody(server, loadbalancerId, "application/json", bodyReader)
+}
+
+// NewUpdateLoadbalancerRequestWithBody generates requests for UpdateLoadbalancer with any type of body
+func NewUpdateLoadbalancerRequestWithBody(server string, loadbalancerId string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "loadbalancer_id", runtime.ParamLocationPath, loadbalancerId)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/loadbalancers/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PATCH", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewListPrivateNetworksRequest generates requests for ListPrivateNetworks
 func NewListPrivateNetworksRequest(server string, params *ListPrivateNetworksParams) (*http.Request, error) {
 	var err error
@@ -3857,6 +4180,25 @@ type ClientWithResponsesInterface interface {
 	// GetKubernetesClusterCredentialsWithResponse request
 	GetKubernetesClusterCredentialsWithResponse(ctx context.Context, clusterId string, reqEditors ...RequestEditorFn) (*GetKubernetesClusterCredentialsResponse, error)
 
+	// ListLoadbalancersWithResponse request
+	ListLoadbalancersWithResponse(ctx context.Context, params *ListLoadbalancersParams, reqEditors ...RequestEditorFn) (*ListLoadbalancersResponse, error)
+
+	// CreateLoadbalancerWithBodyWithResponse request with any body
+	CreateLoadbalancerWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateLoadbalancerResponse, error)
+
+	CreateLoadbalancerWithResponse(ctx context.Context, body CreateLoadbalancerJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateLoadbalancerResponse, error)
+
+	// DeleteLoadbalancerWithResponse request
+	DeleteLoadbalancerWithResponse(ctx context.Context, loadbalancerId string, reqEditors ...RequestEditorFn) (*DeleteLoadbalancerResponse, error)
+
+	// GetLoadbalancerWithResponse request
+	GetLoadbalancerWithResponse(ctx context.Context, loadbalancerId string, reqEditors ...RequestEditorFn) (*GetLoadbalancerResponse, error)
+
+	// UpdateLoadbalancerWithBodyWithResponse request with any body
+	UpdateLoadbalancerWithBodyWithResponse(ctx context.Context, loadbalancerId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateLoadbalancerResponse, error)
+
+	UpdateLoadbalancerWithResponse(ctx context.Context, loadbalancerId string, body UpdateLoadbalancerJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateLoadbalancerResponse, error)
+
 	// ListPrivateNetworksWithResponse request
 	ListPrivateNetworksWithResponse(ctx context.Context, params *ListPrivateNetworksParams, reqEditors ...RequestEditorFn) (*ListPrivateNetworksResponse, error)
 
@@ -4597,6 +4939,120 @@ func (r GetKubernetesClusterCredentialsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetKubernetesClusterCredentialsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ListLoadbalancersResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *PaginatedLoadbalancersResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r ListLoadbalancersResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ListLoadbalancersResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateLoadbalancerResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON201      *SingleLoadbalancerResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateLoadbalancerResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateLoadbalancerResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type DeleteLoadbalancerResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r DeleteLoadbalancerResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r DeleteLoadbalancerResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetLoadbalancerResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SingleLoadbalancerResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r GetLoadbalancerResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetLoadbalancerResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateLoadbalancerResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *SingleLoadbalancerResponse
+	JSONDefault  *ErrorResponse
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateLoadbalancerResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateLoadbalancerResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -5572,6 +6028,67 @@ func (c *ClientWithResponses) GetKubernetesClusterCredentialsWithResponse(ctx co
 		return nil, err
 	}
 	return ParseGetKubernetesClusterCredentialsResponse(rsp)
+}
+
+// ListLoadbalancersWithResponse request returning *ListLoadbalancersResponse
+func (c *ClientWithResponses) ListLoadbalancersWithResponse(ctx context.Context, params *ListLoadbalancersParams, reqEditors ...RequestEditorFn) (*ListLoadbalancersResponse, error) {
+	rsp, err := c.ListLoadbalancers(ctx, params, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseListLoadbalancersResponse(rsp)
+}
+
+// CreateLoadbalancerWithBodyWithResponse request with arbitrary body returning *CreateLoadbalancerResponse
+func (c *ClientWithResponses) CreateLoadbalancerWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateLoadbalancerResponse, error) {
+	rsp, err := c.CreateLoadbalancerWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateLoadbalancerResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateLoadbalancerWithResponse(ctx context.Context, body CreateLoadbalancerJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateLoadbalancerResponse, error) {
+	rsp, err := c.CreateLoadbalancer(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateLoadbalancerResponse(rsp)
+}
+
+// DeleteLoadbalancerWithResponse request returning *DeleteLoadbalancerResponse
+func (c *ClientWithResponses) DeleteLoadbalancerWithResponse(ctx context.Context, loadbalancerId string, reqEditors ...RequestEditorFn) (*DeleteLoadbalancerResponse, error) {
+	rsp, err := c.DeleteLoadbalancer(ctx, loadbalancerId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseDeleteLoadbalancerResponse(rsp)
+}
+
+// GetLoadbalancerWithResponse request returning *GetLoadbalancerResponse
+func (c *ClientWithResponses) GetLoadbalancerWithResponse(ctx context.Context, loadbalancerId string, reqEditors ...RequestEditorFn) (*GetLoadbalancerResponse, error) {
+	rsp, err := c.GetLoadbalancer(ctx, loadbalancerId, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetLoadbalancerResponse(rsp)
+}
+
+// UpdateLoadbalancerWithBodyWithResponse request with arbitrary body returning *UpdateLoadbalancerResponse
+func (c *ClientWithResponses) UpdateLoadbalancerWithBodyWithResponse(ctx context.Context, loadbalancerId string, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateLoadbalancerResponse, error) {
+	rsp, err := c.UpdateLoadbalancerWithBody(ctx, loadbalancerId, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateLoadbalancerResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateLoadbalancerWithResponse(ctx context.Context, loadbalancerId string, body UpdateLoadbalancerJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateLoadbalancerResponse, error) {
+	rsp, err := c.UpdateLoadbalancer(ctx, loadbalancerId, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateLoadbalancerResponse(rsp)
 }
 
 // ListPrivateNetworksWithResponse request returning *ListPrivateNetworksResponse
@@ -6786,6 +7303,164 @@ func ParseGetKubernetesClusterCredentialsResponse(rsp *http.Response) (*GetKuber
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
 		var dest K8sClusterCredentialsResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseListLoadbalancersResponse parses an HTTP response from a ListLoadbalancersWithResponse call
+func ParseListLoadbalancersResponse(rsp *http.Response) (*ListLoadbalancersResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ListLoadbalancersResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest PaginatedLoadbalancersResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateLoadbalancerResponse parses an HTTP response from a CreateLoadbalancerWithResponse call
+func ParseCreateLoadbalancerResponse(rsp *http.Response) (*CreateLoadbalancerResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateLoadbalancerResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 201:
+		var dest SingleLoadbalancerResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON201 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseDeleteLoadbalancerResponse parses an HTTP response from a DeleteLoadbalancerWithResponse call
+func ParseDeleteLoadbalancerResponse(rsp *http.Response) (*DeleteLoadbalancerResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &DeleteLoadbalancerResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetLoadbalancerResponse parses an HTTP response from a GetLoadbalancerWithResponse call
+func ParseGetLoadbalancerResponse(rsp *http.Response) (*GetLoadbalancerResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetLoadbalancerResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SingleLoadbalancerResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest ErrorResponse
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateLoadbalancerResponse parses an HTTP response from a UpdateLoadbalancerWithResponse call
+func ParseUpdateLoadbalancerResponse(rsp *http.Response) (*UpdateLoadbalancerResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateLoadbalancerResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest SingleLoadbalancerResponse
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}
