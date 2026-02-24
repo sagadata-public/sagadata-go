@@ -145,6 +145,30 @@ var AllKubernetesClusterStatuss = []KubernetesClusterStatus{
 	KubernetesClusterStatusError,
 }
 
+// Defines values for LoadbalancerMode.
+const (
+	LoadbalancerModeTcp LoadbalancerMode = "tcp"
+)
+
+var AllLoadbalancerModes = []LoadbalancerMode{
+	LoadbalancerModeTcp,
+}
+
+// Defines values for LoadbalancerStatus.
+const (
+	LoadbalancerStatusActive   LoadbalancerStatus = "active"
+	LoadbalancerStatusCreating LoadbalancerStatus = "creating"
+	LoadbalancerStatusDeleting LoadbalancerStatus = "deleting"
+	LoadbalancerStatusError    LoadbalancerStatus = "error"
+)
+
+var AllLoadbalancerStatuss = []LoadbalancerStatus{
+	LoadbalancerStatusActive,
+	LoadbalancerStatusCreating,
+	LoadbalancerStatusDeleting,
+	LoadbalancerStatusError,
+}
+
 // Defines values for OSType.
 const (
 	OSTypeLinux   OSType = "linux"
@@ -639,6 +663,57 @@ type KubernetesCluster struct {
 // KubernetesClusterStatus The Kubernetes cluster status.
 type KubernetesClusterStatus string
 
+// Loadbalancer defines model for Loadbalancer.
+type Loadbalancer struct {
+	CreatedAt Timestamp `json:"created_at"`
+
+	// Description The human-readable description for the load balancer.
+	Description string `json:"description"`
+
+	// ExternalIp The external IP of the load balancer.
+	ExternalIp *string `json:"external_ip"`
+
+	// Id A unique identifier for each load balancer. This is automatically generated.
+	Id string `json:"id"`
+
+	// Mode The load balancer mode.
+	Mode LoadbalancerMode `json:"mode"`
+
+	// Name The human-readable name for the load balancer.
+	Name string `json:"name"`
+
+	// Network The private network used by the load balancer.
+	Network string `json:"network"`
+
+	// Ports List of port mappings for the load balancer.
+	Ports []LoadbalancerPort `json:"ports"`
+
+	// Region The region identifier.
+	Region Region `json:"region"`
+
+	// Status The load balancer status.
+	Status    LoadbalancerStatus `json:"status"`
+	UpdatedAt Timestamp          `json:"updated_at"`
+}
+
+// LoadbalancerMode The load balancer mode.
+type LoadbalancerMode string
+
+// LoadbalancerPort defines model for Loadbalancer.Port.
+type LoadbalancerPort struct {
+	// Port The port exposed on the load balancer.
+	Port int `json:"port"`
+
+	// TargetPort The port to forward traffic to on the targets.
+	TargetPort int `json:"target_port"`
+
+	// Targets List of target IP addresses.
+	Targets []string `json:"targets"`
+}
+
+// LoadbalancerStatus The load balancer status.
+type LoadbalancerStatus string
+
 // OSType The OS type.
 type OSType string
 
@@ -926,6 +1001,14 @@ type PaginatedKubernetesClustersResponse struct {
 	TotalCount int                 `json:"total_count"`
 }
 
+// PaginatedLoadbalancersResponse defines model for PaginatedLoadbalancersResponse.
+type PaginatedLoadbalancersResponse struct {
+	Loadbalancers []Loadbalancer `json:"loadbalancers"`
+	Page          int            `json:"page"`
+	PerPage       int            `json:"per_page"`
+	TotalCount    int            `json:"total_count"`
+}
+
 // PaginatedPrivateNetworksResponse defines model for PaginatedPrivateNetworksResponse.
 type PaginatedPrivateNetworksResponse struct {
 	Page            int              `json:"page"`
@@ -994,6 +1077,11 @@ type SingleInstanceResponse struct {
 // SingleKubernetesClusterResponse defines model for SingleKubernetesClusterResponse.
 type SingleKubernetesClusterResponse struct {
 	Cluster KubernetesCluster `json:"cluster"`
+}
+
+// SingleLoadbalancerResponse defines model for SingleLoadbalancerResponse.
+type SingleLoadbalancerResponse struct {
+	Loadbalancer Loadbalancer `json:"loadbalancer"`
 }
 
 // SinglePrivateNetworkResponse defines model for SinglePrivateNetworkResponse.
@@ -1245,6 +1333,42 @@ type UpdateKubernetesClusterJSONBody struct {
 	Network *string `json:"network"`
 }
 
+// ListLoadbalancersParams defines parameters for ListLoadbalancers.
+type ListLoadbalancersParams struct {
+	Page    *PageQueryParameter    `form:"page,omitempty" json:"page,omitempty"`
+	PerPage *PerPageQueryParameter `form:"per_page,omitempty" json:"per_page,omitempty"`
+}
+
+// CreateLoadbalancerJSONBody defines parameters for CreateLoadbalancer.
+type CreateLoadbalancerJSONBody struct {
+	// Description The human-readable description for the load balancer.
+	Description *string `json:"description,omitempty"`
+
+	// Name The human-readable name for the load balancer.
+	Name string `json:"name"`
+
+	// Network The private network to use for the load balancer.
+	Network string `json:"network"`
+
+	// Ports List of port mappings for the load balancer.
+	Ports []LoadbalancerPort `json:"ports"`
+
+	// Region The region identifier.
+	Region Region `json:"region"`
+}
+
+// UpdateLoadbalancerJSONBody defines parameters for UpdateLoadbalancer.
+type UpdateLoadbalancerJSONBody struct {
+	// Description The human-readable description for the load balancer.
+	Description *string `json:"description,omitempty"`
+
+	// Name The human-readable name for the load balancer.
+	Name *string `json:"name,omitempty"`
+
+	// Ports List of port mappings for the load balancer.
+	Ports *[]LoadbalancerPort `json:"ports,omitempty"`
+}
+
 // ListPrivateNetworksParams defines parameters for ListPrivateNetworks.
 type ListPrivateNetworksParams struct {
 	Page    *PageQueryParameter    `form:"page,omitempty" json:"page,omitempty"`
@@ -1436,6 +1560,12 @@ type CreateKubernetesClusterJSONRequestBody CreateKubernetesClusterJSONBody
 
 // UpdateKubernetesClusterJSONRequestBody defines body for UpdateKubernetesCluster for application/json ContentType.
 type UpdateKubernetesClusterJSONRequestBody UpdateKubernetesClusterJSONBody
+
+// CreateLoadbalancerJSONRequestBody defines body for CreateLoadbalancer for application/json ContentType.
+type CreateLoadbalancerJSONRequestBody CreateLoadbalancerJSONBody
+
+// UpdateLoadbalancerJSONRequestBody defines body for UpdateLoadbalancer for application/json ContentType.
+type UpdateLoadbalancerJSONRequestBody UpdateLoadbalancerJSONBody
 
 // CreatePrivateNetworkJSONRequestBody defines body for CreatePrivateNetwork for application/json ContentType.
 type CreatePrivateNetworkJSONRequestBody CreatePrivateNetworkJSONBody
