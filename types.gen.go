@@ -1320,8 +1320,8 @@ type ListKubernetesClustersParams struct {
 
 // CreateKubernetesClusterJSONBody defines parameters for CreateKubernetesCluster.
 type CreateKubernetesClusterJSONBody struct {
-	// Id Optional ID for the cluster. If not provided, one will be generated.
-	Id *string `json:"id,omitempty"`
+	// Name The name for the cluster.
+	Name string `json:"name"`
 
 	// Network The network ID for the cluster.
 	Network *string `json:"network"`
