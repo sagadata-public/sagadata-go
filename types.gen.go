@@ -780,6 +780,9 @@ type PrivateNetwork struct {
 	// Description The human-readable description for the private network.
 	Description string `json:"description"`
 
+	// GatewayIpv4 The IPv4 default gateway advertised to instances via DHCP.
+	GatewayIpv4 *string `json:"gateway_ipv4"`
+
 	// Id A unique identifier for each private network. This is automatically generated.
 	Id PrivateNetworkId `json:"id"`
 
@@ -1506,6 +1509,9 @@ type CreatePrivateNetworkJSONBody struct {
 
 	// Description The human-readable description set for the private network.
 	Description *string `json:"description,omitempty"`
+
+	// GatewayIpv4 The IPv4 default gateway to advertise to instances via DHCP.
+	GatewayIpv4 *string `json:"gateway_ipv4,omitempty"`
 
 	// Name The human-readable name set for the private network.
 	Name string `json:"name"`
