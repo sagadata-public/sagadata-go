@@ -686,6 +686,9 @@ type InstancesAvailability struct {
 type KubernetesCluster struct {
 	CreatedAt Timestamp `json:"created_at"`
 
+	// DeployCsi Whether the CSI driver is deployed to this cluster.
+	DeployCsi bool `json:"deploy_csi"`
+
 	// Id A unique identifier for each Kubernetes cluster. This is automatically generated.
 	Id string `json:"id"`
 
@@ -1427,6 +1430,9 @@ type ListKubernetesClustersParams struct {
 
 // CreateKubernetesClusterJSONBody defines parameters for CreateKubernetesCluster.
 type CreateKubernetesClusterJSONBody struct {
+	// DeployCsi Deploy the CSI driver to this cluster.
+	DeployCsi *bool `json:"deploy_csi,omitempty"`
+
 	// Name Name for the cluster.
 	Name string `json:"name"`
 
